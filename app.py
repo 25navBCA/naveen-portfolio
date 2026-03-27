@@ -13,19 +13,22 @@ def get_db_connection():
 
 # CREATE TABLE AUTOMATICALLY
 def create_table():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS contacts (
-            id SERIAL PRIMARY KEY,
-            name TEXT,
-            roll TEXT,
-            email TEXT
-        );
-    """)
-    conn.commit()
-    cur.close()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS contacts (
+                id SERIAL PRIMARY KEY,
+                name TEXT,
+                roll TEXT,
+                email TEXT
+            );
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print("Table creation error:", e)
 
 create_table()
 
@@ -35,42 +38,52 @@ def home():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    name = data['name']
-    roll = data['roll']
-    email = data['email']
+        name = data.get('name')
+        roll = data.get('roll')
+        email = data.get('email')
 
-    conn = get_db_connection()
-    cur = conn.cursor()
+        conn = get_db_connection()
+        cur = conn.cursor()
 
-    cur.execute(
-        "INSERT INTO contacts (name, roll, email) VALUES (%s, %s, %s)",
-        (name, roll, email)
-    )
+        cur.execute(
+            "INSERT INTO contacts (name, roll, email) VALUES (%s, %s, %s)",
+            (name, roll, email)
+        )
 
-    conn.commit()
-    cur.close()
-    conn.close()
+        conn.commit()
+        cur.close()
+        conn.close()
 
-    return jsonify({"message": "Saved successfully"})
+        return jsonify({"message": "Saved successfully"}), 200
+
+    except Exception as e:
+        print("Submit error:", e)
+        return jsonify({"error": "Failed to save data"}), 500
 
 
 @app.route('/data', methods=['GET'])
 def get_data():
-    conn = get_db_connection()
-    cur = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
 
-    cur.execute("SELECT name, roll, email FROM contacts")
-    rows = cur.fetchall()
+        cur.execute("SELECT name, roll, email FROM contacts")
+        rows = cur.fetchall()
 
-    cur.close()
-    conn.close()
+        cur.close()
+        conn.close()
 
-    return jsonify([
-        {"name": r[0], "roll": r[1], "email": r[2]} for r in rows
-    ])
+        return jsonify([
+            {"name": r[0], "roll": r[1], "email": r[2]} for r in rows
+        ])
+
+    except Exception as e:
+        print("Fetch error:", e)
+        return jsonify({"error": "Failed to fetch data"}), 500
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=5000)
