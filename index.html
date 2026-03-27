@@ -1,136 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naveen Portfolio</title>
-
+    <title>Chatrapathi Portfolio</title>
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: Arial;
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
-        }
-
-        .hero {
             text-align: center;
-            padding: 60px 20px 30px;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .hero p {
-            font-size: 18px;
-            color: #dcdcdc;
         }
 
         .container {
+            margin-top: 80px;
+        }
+
+        .card {
             background: white;
             color: black;
-            width: 360px;
-            margin: 20px auto;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-        }
-
-        .container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2a5298;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 12px;
-            font-size: 14px;
-            font-weight: 500;
+            border-radius: 12px;
+            width: 300px;
+            margin: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         input {
-            width: 100%;
+            width: 90%;
             padding: 10px;
-            margin-top: 5px;
-            border-radius: 8px;
+            margin: 10px 0;
+            border-radius: 6px;
             border: 1px solid #ccc;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: #2a5298;
-            outline: none;
-            box-shadow: 0 0 5px rgba(42,82,152,0.3);
         }
 
         button {
-            margin-top: 15px;
-            width: 100%;
-            padding: 12px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #2a5298;
             color: white;
-            font-size: 16px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: 0.3s;
         }
 
         button:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
+            background: #1e3c72;
         }
 
-        .footer {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 14px;
-            color: #ccc;
+        #success {
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- HERO -->
-    <div class="hero">
-        <h1>Naveen</h1>
-        <p>BCA Student | Web Developer</p>
-    </div>
-
-    <!-- FORM -->
     <div class="container">
-        <h2>Contact Me</h2>
+        <h1>Chatra</h1>
+        <p>BCA Student | Web Developer</p>
 
-        <form id="contactForm">
-            <label>
-                Name:
-                <input type="text" name="name" required>
-            </label>
+        <div class="card">
+            <h2>Contact Me</h2>
 
-            <label>
-                Email:
-                <input type="email" name="email" required>
-            </label>
+            <form id="form">
+                <input id="name" placeholder="Name" required><br>
+                <input id="roll" placeholder="Roll No" required><br>
+                <input id="email" placeholder="Email" required><br>
+                <button type="submit">Submit</button>
+            </form>
 
-            <label>
-                Roll No:
-                <input type="text" name="rollno" required>
-            </label>
-
-            <button type="submit">Submit</button>
-        </form>
+            <div id="success">Submitted Successfully ✅</div>
+        </div>
     </div>
 
-    <!-- FOOTER -->
-    <div class="footer">
-        © 2026 Naveen Portfolio
-    </div>
+    <script>
+        const backend = "https://chatrapathi-portfolio-1.onrender.com"; // 🔴 PUT YOUR URL
 
-    <script src="app.js"></script>
+        document.getElementById("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            await fetch(`${backend}/submit`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: document.getElementById("name").value,
+                    roll: document.getElementById("roll").value,
+                    email: document.getElementById("email").value
+                })
+            });
+
+            // show success
+            document.getElementById("success").style.display = "block";
+
+            // clear form
+            document.getElementById("form").reset();
+        });
+    </script>
 
 </body>
 </html>
